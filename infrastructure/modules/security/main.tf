@@ -27,7 +27,7 @@ resource "aws_iam_role_policy_attachment" "eks-worker-nodes-cni-policy-attachmen
   role       = aws_iam_role.eks-node-group-role.name
 }
 
-resource "aws_iam_role_policy_attachment" "nodes-ecr-readonly-policy-attachment" {
+resource "aws_iam_role_policy_attachment" "ecr-readonly-policy-attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
   role       = aws_iam_role.eks-node-group-role.name
 }
