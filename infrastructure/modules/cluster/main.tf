@@ -22,7 +22,7 @@ resource "aws_eks_node_group" "eks-cluster-private-node-group" {
   node_group_name = "${var.APP_NAME}-eks-cluster-node-group-${var.STAGE}"
   node_role_arn   = var.EKS_NODE_GROUP_IAM_ROLE
 
-  subnet_ids = var.PRIVATE_SUBNET_IDS
+  subnet_ids = var.PUBLIC_SUBNET_IDS
 
   capacity_type  = "ON_DEMAND"
   instance_types = [var.EKS_WORKER_NODE_INSTANCE_TYPE]
