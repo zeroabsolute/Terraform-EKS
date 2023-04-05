@@ -23,3 +23,16 @@ variable "STAGE" {
   type    = string
   default = "production"
 }
+
+variable "DB_USERNAME" {
+  default = "postgres"
+}
+
+variable "DB_PASSWORD" {
+  default = "postgres"
+}
+
+variable "DB_NAME" {
+  default = "prod"
+}
+

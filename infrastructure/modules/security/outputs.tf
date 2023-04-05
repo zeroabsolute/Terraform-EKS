@@ -21,3 +21,7 @@ output "eks-node-group-cni-policy-attachment" {
 output "eks-ecr-policy-attachment" {
   value = aws_iam_role_policy_attachment.ecr-readonly-policy-attachment
 }
+
+output "db-security-group" {
+  value = aws_security_group.db-security-group.id
+}

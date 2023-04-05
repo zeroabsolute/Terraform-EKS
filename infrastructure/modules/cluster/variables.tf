@@ -40,7 +40,7 @@ variable "EKS_ECR_POLICY_ATTACHMENT" {
 
 variable "EKS_WORKER_NODE_INSTANCE_TYPE" {
   type    = string
-  default = "t3.micro"
+  default = "t3.small"
 }
 
 variable "EKS_CLUSTER_MIN_SIZE" {

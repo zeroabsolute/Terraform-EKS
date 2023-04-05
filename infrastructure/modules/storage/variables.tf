@@ -5,7 +5,3 @@ variable "APP_NAME" {
 variable "STAGE" {
   type = string
 }
-
-variable "VPC_ID" {
-  type = string
-}
