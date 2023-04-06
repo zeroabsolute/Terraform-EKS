@@ -32,6 +32,11 @@ resource "aws_iam_role_policy_attachment" "ecr-readonly-policy-attachment" {
   role       = aws_iam_role.eks-node-group-role.name
 }
 
+resource "aws_iam_role_policy_attachment" "eks-worker-nodes-cloudwatch-policy-attachment" {
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchAgentServerPolicy"
+  role       = aws_iam_role.eks-node-group-role.name
+}
+
 # Database security groups
 
 resource "aws_security_group" "db-security-group" {
