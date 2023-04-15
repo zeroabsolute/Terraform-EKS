@@ -70,17 +70,26 @@ jobs:
           ecr_repository_name=$(terraform output ECR_REPOSITORY_NAME)
           db_address=$(terraform output DB_ADDRESS)
           db_port=$(terraform output DB_PORT)
+          db_username=$(terraform output DB_USERNAME)
+          db_password=$(terraform output DB_PASSWORD)
+          db_name=$(terraform output DB_NAME)
           echo "WEB_CLIENT_BUCKET_NAME=${web_client_bucket_name}" >> $GITHUB_OUTPUT
           echo "WEB_CLIENT_DOMAIN=${web_client_domain}" >> $GITHUB_OUTPUT
           echo "ECR_REPOSITORY_NAME=${ecr_repository_name}" >> $GITHUB_OUTPUT
           echo "DB_ADDRESS=${db_address}" >> $GITHUB_OUTPUT
           echo "DB_PORT=${db_port}" >> $GITHUB_OUTPUT
+          echo "DB_USERNAME=${db_username}" >> $GITHUB_OUTPUT
+          echo "DB_PASSWORD=${db_password}" >> $GITHUB_OUTPUT
+          echo "DB_NAME=${db_name}" >> $GITHUB_OUTPUT
     outputs:
       WEB_CLIENT_BUCKET_NAME: ${{ steps.output.outputs.WEB_CLIENT_BUCKET_NAME }}
       WEB_CLIENT_DOMAIN: ${{ steps.output.outputs.WEB_CLIENT_DOMAIN }}
       ECR_REPOSITORY_NAME: ${{ steps.output.outputs.ECR_REPOSITORY_NAME }}
       DB_ADDRESS: ${{ steps.output.outputs.DB_ADDRESS }}
       DB_PORT: ${{ steps.output.outputs.DB_PORT }}
+      DB_USERNAME: ${{ steps.output.outputs.DB_USERNAME }}
+      DB_PASSWORD: ${{ steps.output.outputs.DB_PORT }}
+      DB_NAME: ${{ steps.output.outputs.DB_NAME }}
   build_api:
     name: "Build API"
     runs-on: ubuntu-latest
@@ -108,12 +117,20 @@ jobs:
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" ./api
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          echo "::set-output name=IMAGE_URL::${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
+          echo "IMAGE_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
       - name: Deploy to EKS
         id: deploy-to-eks
+        env:
+          API_IMAGE_URL: "${steps.build-image.outputs.IMAGE_URL}"
+          DATABASE_HOST: ${{ needs.terraform.outputs.DB_ADDRESS }}
+          DATABASE_PORT: ${{ needs.terraform.outputs.DB_PORT }}
+          DATABASE_USER: ${{ needs.terraform.outputs.DB_USERNAME }}
+          DATABASE_PASSWORD: ${{ needs.terraform.outputs.DB_PASSWORD }}
+          DATABASE_NAME: ${{ needs.terraform.outputs.DB_NAME }}
         run: |
+          kubectl delete -f kube
           envsubst < ./kube/api.yaml | kubectl apply -f -
-          echo "::set-output name=LB_ENDPOINT::$( kubectl get service/servicename -o jsonpath='{.spec.clusterIP}' )"
+          echo "LB_ENDPOINT=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_OUTPUT
     outputs:
       LB_ENDPOINT: ${{ steps.deploy-to-eks.outputs.LB_ENDPOINT }}
   build_web_client:

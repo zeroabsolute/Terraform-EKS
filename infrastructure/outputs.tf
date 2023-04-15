@@ -6,6 +6,18 @@ output "DB_PORT" {
   value = module.database.db-port
 }
 
+output "DB_USERNAME" {
+  value = var.DB_USERNAME
+}
+
+output "DB_PASSWORD" {
+  value = var.DB_PASSWORD
+}
+
+output "DB_NAME" {
+  value = var.DB_NAME
+}
+
 output "WEB_CLIENT_BUCKET_NAME" {
   value = module.storage.web-client-bucket-name
 }
