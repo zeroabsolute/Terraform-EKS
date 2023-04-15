@@ -129,7 +129,8 @@ jobs:
           DATABASE_NAME: ${{ needs.terraform.outputs.DB_NAME }}
         run: |
           envsubst < ./kube/api.yaml | kubectl apply -f -
-          echo "LB_ENDPOINT=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')" >> $GITHUB_OUTPUT
+          lb_endpoint=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+          echo "LB_ENDPOINT=${lb_endpoint}" >> $GITHUB_OUTPUT
     outputs:
       LB_ENDPOINT: ${{ steps.deploy-to-eks.outputs.LB_ENDPOINT }}
   build_web_client:
