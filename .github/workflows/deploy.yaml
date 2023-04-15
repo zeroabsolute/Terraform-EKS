@@ -128,6 +128,8 @@ jobs:
           DATABASE_PASSWORD: ${{ needs.terraform.outputs.DB_PASSWORD }}
           DATABASE_NAME: ${{ needs.terraform.outputs.DB_NAME }}
         run: |
+          envsubst < ./kube/api.yaml > out.yaml
+          cat out.yaml
           envsubst < ./kube/api.yaml | kubectl apply -f -
           echo "LB_ENDPOINT=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_OUTPUT
     outputs:
@@ -135,7 +137,9 @@ jobs:
   build_web_client:
     name: "Build Web Client"
     runs-on: ubuntu-latest
-    needs: terraform
+    needs:
+      - terraform
+      - build_api
     defaults:
       run:
         shell: bash
