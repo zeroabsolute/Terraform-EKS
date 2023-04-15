@@ -69,11 +69,11 @@ jobs:
           ecr_repository_name=$(terraform output ECR_REPOSITORY_NAME)
           db_address=$(terraform output DB_ADDRESS)
           db_port=$(terraform output DB_PORT)
-          echo "::set-output name=WEB_CLIENT_BUCKET_NAME::${web_client_bucket_name}"
-          echo "::set-output name=WEB_CLIENT_DOMAIN::${web_client_domain}"
-          echo "::set-output name=ECR_REPOSITORY_NAME::${ecr_repository_name}"
-          echo "::set-output name=DB_ADDRESS::${db_address}"
-          echo "::set-output name=DB_PORT::${db_port}"
+          echo "WEB_CLIENT_BUCKET_NAME=${web_client_bucket_name}" >> $GITHUB_OUTPUT
+          echo "WEB_CLIENT_DOMAIN=${web_client_domain}" >> $GITHUB_OUTPUT
+          echo "ECR_REPOSITORY_NAME=${ecr_repository_name}" >> $GITHUB_OUTPUT
+          echo "DB_ADDRESS=${db_address}" >> $GITHUB_OUTPUT
+          echo "DB_PORT=${db_port}" >> $GITHUB_OUTPUT
     outputs:
       WEB_CLIENT_BUCKET_NAME: ${{ steps.output.outputs.WEB_CLIENT_BUCKET_NAME }}
       WEB_CLIENT_DOMAIN: ${{ steps.output.outputs.WEB_CLIENT_DOMAIN }}
