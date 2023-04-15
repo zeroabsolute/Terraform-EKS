@@ -121,7 +121,7 @@ jobs:
       - name: Deploy to EKS
         id: deploy-to-eks
         env:
-          API_IMAGE_URL: "${steps.build-image.outputs.IMAGE_URL}"
+          API_IMAGE_URL: ${steps.build-image.outputs.IMAGE_URL}
           DATABASE_HOST: ${{ needs.terraform.outputs.DB_ADDRESS }}
           DATABASE_PORT: ${{ needs.terraform.outputs.DB_PORT }}
           DATABASE_USER: ${{ needs.terraform.outputs.DB_USERNAME }}
