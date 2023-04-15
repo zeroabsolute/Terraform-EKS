@@ -113,7 +113,7 @@ jobs:
         env:
           REGISTRY: ${{ steps.login-ecr.outputs.registry }}
           REPOSITORY: ${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}
-          IMAGE_TAG: latest
+          IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" ./api
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
@@ -154,6 +154,8 @@ jobs:
         run: |
           npm install
           export REACT_APP_SERVER_URL=http://${{ needs.build_api.outputs.LB_ENDPOINT }}
+          echo REACT_APP_SERVER_URL
+          echo ${{ needs.build_api.outputs.LB_ENDPOINT }}
           npm run build
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./build/ s3://${{ needs.terraform.outputs.WEB_CLIENT_BUCKET_NAME }} --delete
