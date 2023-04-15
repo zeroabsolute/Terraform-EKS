@@ -88,7 +88,7 @@ jobs:
       DB_ADDRESS: ${{ steps.output.outputs.DB_ADDRESS }}
       DB_PORT: ${{ steps.output.outputs.DB_PORT }}
       DB_USERNAME: ${{ steps.output.outputs.DB_USERNAME }}
-      DB_PASSWORD: ${{ steps.output.outputs.DB_PORT }}
+      DB_PASSWORD: ${{ steps.output.outputs.DB_PASSWORD }}
       DB_NAME: ${{ steps.output.outputs.DB_NAME }}
   build_api:
     name: "Build API"
@@ -117,10 +117,11 @@ jobs:
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" ./api
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
+          echo "IMAGE_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
       - name: Deploy to EKS
         id: deploy-to-eks
         env:
-          API_IMAGE_URL: ${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}/${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}:latest
+          API_IMAGE_URL: ${{ steps.build-image.outputs.IMAGE_URL }}
           DATABASE_HOST: ${{ needs.terraform.outputs.DB_ADDRESS }}
           DATABASE_PORT: ${{ needs.terraform.outputs.DB_PORT }}
           DATABASE_USER: ${{ needs.terraform.outputs.DB_USERNAME }}
