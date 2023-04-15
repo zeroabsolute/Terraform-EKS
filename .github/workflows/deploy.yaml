@@ -117,11 +117,10 @@ jobs:
         run: |
           docker build -t "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" ./api
           docker push "${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}"
-          echo "IMAGE_URL=${{ env.REGISTRY }}/${{ env.REPOSITORY }}:${{ env.IMAGE_TAG }}" >> $GITHUB_OUTPUT
       - name: Deploy to EKS
         id: deploy-to-eks
         env:
-          API_IMAGE_URL: ${{ steps.build-image.outputs.IMAGE_URL }}
+          API_IMAGE_URL: ${{ steps.login-ecr.outputs.registry }}/${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}:latest
           DATABASE_HOST: ${{ needs.terraform.outputs.DB_ADDRESS }}
           DATABASE_PORT: ${{ needs.terraform.outputs.DB_PORT }}
           DATABASE_USER: ${{ needs.terraform.outputs.DB_USERNAME }}
