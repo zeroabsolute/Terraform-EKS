@@ -128,7 +128,6 @@ jobs:
           DATABASE_PASSWORD: ${{ needs.terraform.outputs.DB_PASSWORD }}
           DATABASE_NAME: ${{ needs.terraform.outputs.DB_NAME }}
         run: |
-          kubectl delete -f kube
           envsubst < ./kube/api.yaml | kubectl apply -f -
           echo "LB_ENDPOINT=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].ip}')" >> $GITHUB_OUTPUT
     outputs:
