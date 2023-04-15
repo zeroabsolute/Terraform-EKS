@@ -120,7 +120,7 @@ jobs:
       - name: Deploy to EKS
         id: deploy-to-eks
         env:
-          API_IMAGE_URL: ${{ steps.login-ecr.outputs.registry }}/${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}:latest
+          API_IMAGE_URL: ${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}/${{ needs.terraform.outputs.ECR_REPOSITORY_NAME }}:latest
           DATABASE_HOST: ${{ needs.terraform.outputs.DB_ADDRESS }}
           DATABASE_PORT: ${{ needs.terraform.outputs.DB_PORT }}
           DATABASE_USER: ${{ needs.terraform.outputs.DB_USERNAME }}
