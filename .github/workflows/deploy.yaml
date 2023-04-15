@@ -113,7 +113,7 @@ jobs:
         id: deploy-to-eks
         run: |
           envsubst < ./kube/api.yaml | kubectl apply -f -
-          echo "::set-output name=LB_ENDPOINT::${{ kubectl get service/servicename -o jsonpath='{.spec.clusterIP}' }}"
+          echo "::set-output name=LB_ENDPOINT::$( kubectl get service/servicename -o jsonpath='{.spec.clusterIP}' )"
     outputs:
       LB_ENDPOINT: ${{ steps.deploy-to-eks.outputs.LB_ENDPOINT }}
   build_web_client:
