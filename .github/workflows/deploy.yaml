@@ -130,7 +130,6 @@ jobs:
         run: |
           envsubst < ./kube/api.yaml | kubectl apply -f -
           lb_endpoint=$(kubectl get service api -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
-          echo "===> ${lb_endpoint}"
           echo "LB_ENDPOINT=${lb_endpoint}" >> $GITHUB_OUTPUT
     outputs:
       LB_ENDPOINT: ${{ steps.deploy-to-eks.outputs.LB_ENDPOINT }}
@@ -156,8 +155,6 @@ jobs:
         run: |
           npm install
           export REACT_APP_SERVER_URL=http://${{ needs.build_api.outputs.LB_ENDPOINT }}
-          echo "===> ${REACT_APP_SERVER_URL}"
-          echo "===> ${{ needs.build_api.outputs.LB_ENDPOINT }}"
           npm run build
       - name: Deploy app build to S3 bucket
         run: aws s3 sync ./build/ s3://${{ needs.terraform.outputs.WEB_CLIENT_BUCKET_NAME }} --delete
